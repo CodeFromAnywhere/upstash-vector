@@ -1,0 +1,117 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Upstash Vector API - Upsert Data",
+    "version": "1.0.0",
+    "description": "API for upserting (inserting or updating) raw text data after embedding it in the Upstash Vector database."
+  },
+  "servers": [
+    {
+      "url": "{UPSTASH_VECTOR_REST_URL}",
+      "variables": {
+        "UPSTASH_VECTOR_REST_URL": {
+          "default": "https://example-vector-url.upstash.io",
+          "description": "The base URL for the Upstash Vector REST API"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/upsert-data/{namespace}": {
+      "post": {
+        "summary": "Upsert Data",
+        "description": "Upserts (inserts or updates) the raw text data after embedding it.",
+        "parameters": [
+          {
+            "name": "namespace",
+            "in": "path",
+            "description": "The namespace to use. When no namespace is specified, the default namespace will be used.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/UpsertDataItem"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/UpsertDataItem"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UpsertDataItem": {
+        "type": "object",
+        "required": ["id", "data"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the vector."
+          },
+          "data": {
+            "type": "string",
+            "description": "The raw text data to embed and upsert."
+          },
+          "metadata": {
+            "type": "object",
+            "description": "The metadata of the vector. This makes identifying vectors on retrieval easier and can be used with filters on queries."
+          }
+        }
+      },
+      "SuccessResponse": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "type": "string",
+            "enum": ["Success"],
+            "description": "Indicates that the operation was successful."
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

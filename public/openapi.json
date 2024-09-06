@@ -1,0 +1,1424 @@
+{
+  "info": {
+    "title": "Upstash Vector API - Delete Vectors",
+    "version": "1.0.0",
+    "description": "API for deleting vectors from the Upstash Vector database."
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/delete/{namespace}": {
+      "delete": {
+        "summary": "Delete Vectors",
+        "description": "Deletes the vectors with the given ids from the specified namespace.",
+        "parameters": [
+          {
+            "name": "namespace",
+            "in": "path",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The namespace to use. When no namespace is specified, the default namespace will be used."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "A vector id or array of vector ids to delete."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "deleted": {
+                      "type": "integer",
+                      "description": "The number of the successfully deleted vectors."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - When there's a syntax error, an invalid/unsupported command is sent or command execution fails."
+          },
+          "401": {
+            "description": "Unauthorized - When authentication fails; auth token is missing or invalid."
+          },
+          "405": {
+            "description": "Method Not Allowed - When an unsupported HTTP method is used."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "operationId": "delete/{namespace}=delete",
+        "servers": [
+          {
+            "url": "{UPSTASH_VECTOR_REST_URL}",
+            "variables": {
+              "UPSTASH_VECTOR_REST_URL": {
+                "default": "https://your-vector-rest-url.upstash.io"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/query-data/{namespace}": {
+      "post": {
+        "summary": "Query Data",
+        "description": "Queries the approximate nearest neighbors of a raw text data after embedding it.",
+        "parameters": [
+          {
+            "name": "namespace",
+            "in": "path",
+            "description": "The namespace to use. When no namespace is specified, the default namespace will be used.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "data",
+                  "topK"
+                ],
+                "properties": {
+                  "data": {
+                    "type": "string",
+                    "description": "The raw text data to embed and query."
+                  },
+                  "topK": {
+                    "type": "integer",
+                    "description": "The total number of the vectors that you want to receive as a query result.",
+                    "default": 10
+                  },
+                  "includeMetadata": {
+                    "type": "boolean",
+                    "description": "Whether to include the metadata of the vectors in the response, if any.",
+                    "default": false
+                  },
+                  "includeVectors": {
+                    "type": "boolean",
+                    "description": "Whether to include the vector values in the response.",
+                    "default": false
+                  },
+                  "includeData": {
+                    "type": "boolean",
+                    "description": "Whether to include the data of the vectors in the response.",
+                    "default": false
+                  },
+                  "filter": {
+                    "type": "string",
+                    "description": "Metadata filter to apply.",
+                    "default": ""
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "scores": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "score"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "The id of the vector."
+                          },
+                          "score": {
+                            "type": "number",
+                            "description": "The similarity score of the vector, calculated based on the distance metric of your index."
+                          },
+                          "vector": {
+                            "type": "array",
+                            "items": {
+                              "type": "number"
+                            },
+                            "description": "The vector value."
+                          },
+                          "metadata": {
+                            "type": "object",
+                            "description": "The metadata of the vector, if any."
+                          },
+                          "data": {
+                            "type": "string",
+                            "description": "The textual data of the vector before embedding it."
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "operationId": "query-data/{namespace}=post",
+        "servers": [
+          {
+            "url": "{UPSTASH_VECTOR_REST_URL}",
+            "variables": {
+              "UPSTASH_VECTOR_REST_URL": {
+                "default": "https://your-vector-db-url.upstash.io"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/range/{namespace}": {
+      "get": {
+        "summary": "Range Vectors",
+        "description": "Ranges over vectors starting (inclusive) from a cursor until the end of the vectors or given limit.",
+        "parameters": [
+          {
+            "name": "namespace",
+            "in": "path",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The namespace to use. When no namespace is specified, the default namespace will be used."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "cursor",
+                  "limit"
+                ],
+                "properties": {
+                  "cursor": {
+                    "type": "string",
+                    "description": "The offset to the last retrieved vector. Should be set to \"0\" in the initial range."
+                  },
+                  "limit": {
+                    "type": "integer",
+                    "description": "The number of maximum vectors that you want in the response of range. (page size)"
+                  },
+                  "includeMetadata": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Whether to include the metadata of the vectors in the response, if any."
+                  },
+                  "includeVectors": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Whether to include the vector values in the response."
+                  },
+                  "includeData": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Whether to include the data of the vectors in the response, if any."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "nextCursor",
+                    "vectors"
+                  ],
+                  "properties": {
+                    "nextCursor": {
+                      "type": "string",
+                      "description": "The offset for the next range. You should place this in the `cursor` field for the next range. It will be equal to empty string if there are no other vectors to range."
+                    },
+                    "vectors": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "vector"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "The id of the vector."
+                          },
+                          "vector": {
+                            "type": "array",
+                            "items": {
+                              "type": "number"
+                            },
+                            "description": "The vector value."
+                          },
+                          "metadata": {
+                            "type": "object",
+                            "description": "The metadata of the vector, if any."
+                          },
+                          "data": {
+                            "type": "string",
+                            "description": "The unstructured data of the vector, if any."
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "operationId": "range/{namespace}=get",
+        "servers": [
+          {
+            "url": "{UPSTASH_VECTOR_REST_URL}",
+            "variables": {
+              "UPSTASH_VECTOR_REST_URL": {
+                "default": "https://example-vector-url.upstash.io"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/query/{namespace}": {
+      "post": {
+        "summary": "Query Vectors",
+        "description": "Queries the approximate nearest neighbors of a vector.",
+        "parameters": [
+          {
+            "name": "namespace",
+            "in": "path",
+            "description": "The namespace to use. When no namespace is specified, the default namespace will be used.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "vector"
+                ],
+                "properties": {
+                  "vector": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "description": "The query vector. Should have the same dimensions as your index."
+                  },
+                  "topK": {
+                    "type": "integer",
+                    "default": 10,
+                    "description": "The total number of vectors to receive as a query result."
+                  },
+                  "includeMetadata": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Whether to include the metadata of the vectors in the response."
+                  },
+                  "includeVectors": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Whether to include the vector values in the response."
+                  },
+                  "includeData": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Whether to include the data of the vectors in the response."
+                  },
+                  "filter": {
+                    "type": "string",
+                    "description": "Metadata filter to apply."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "The id of the vector."
+                          },
+                          "score": {
+                            "type": "number",
+                            "description": "The similarity score of the vector."
+                          },
+                          "vector": {
+                            "type": "array",
+                            "items": {
+                              "type": "number"
+                            },
+                            "description": "The vector value."
+                          },
+                          "metadata": {
+                            "type": "object",
+                            "description": "The metadata of the vector, if any."
+                          },
+                          "data": {
+                            "type": "string",
+                            "description": "The unstructured data of the vector, if any."
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "score"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "operationId": "query/{namespace}=post",
+        "servers": [
+          {
+            "url": "{UPSTASH_VECTOR_REST_URL}",
+            "variables": {
+              "UPSTASH_VECTOR_REST_URL": {
+                "default": "https://your-vector-api-url.upstash.io"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/upsert/{namespace}": {
+      "post": {
+        "summary": "Upsert Vectors",
+        "description": "Upserts (inserts or updates) one or multiple vectors in the specified namespace.",
+        "parameters": [
+          {
+            "name": "namespace",
+            "in": "path",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The namespace to use. When no namespace is specified, the default namespace will be used."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "vector"
+                    ],
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "The id of the vector."
+                      },
+                      "vector": {
+                        "type": "array",
+                        "items": {
+                          "type": "number"
+                        },
+                        "description": "The vector value. Should have the same dimensions as your index."
+                      },
+                      "metadata": {
+                        "type": "object",
+                        "description": "The metadata of the vector. This makes identifying vectors on retrieval easier and can be used with filters on queries."
+                      },
+                      "data": {
+                        "type": "string",
+                        "description": "The data of the vector. This is an unstructured raw text data, which can be anything associated with this vector."
+                      }
+                    }
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "id",
+                        "vector"
+                      ],
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "The id of the vector."
+                        },
+                        "vector": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "description": "The vector value. Should have the same dimensions as your index."
+                        },
+                        "metadata": {
+                          "type": "object",
+                          "description": "The metadata of the vector. This makes identifying vectors on retrieval easier and can be used with filters on queries."
+                        },
+                        "data": {
+                          "type": "string",
+                          "description": "The data of the vector. This is an unstructured raw text data, which can be anything associated with this vector."
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": "string",
+                      "enum": [
+                        "Success"
+                      ],
+                      "description": "Indicates that the operation was successful."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message describing the issue."
+                    },
+                    "status": {
+                      "type": "integer",
+                      "description": "HTTP status code of the error."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message describing the issue."
+                    },
+                    "status": {
+                      "type": "integer",
+                      "description": "HTTP status code of the error."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message describing the issue."
+                    },
+                    "status": {
+                      "type": "integer",
+                      "description": "HTTP status code of the error."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "operationId": "upsert/{namespace}=post",
+        "servers": [
+          {
+            "url": "{UPSTASH_VECTOR_REST_URL}",
+            "variables": {
+              "UPSTASH_VECTOR_REST_URL": {
+                "default": "https://example.upstash.com/vector",
+                "description": "The base URL for the Upstash Vector API"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/upsert-data/{namespace}": {
+      "post": {
+        "summary": "Upsert Data",
+        "description": "Upserts (inserts or updates) the raw text data after embedding it.",
+        "parameters": [
+          {
+            "name": "namespace",
+            "in": "path",
+            "description": "The namespace to use. When no namespace is specified, the default namespace will be used.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "data"
+                    ],
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "The id of the vector."
+                      },
+                      "data": {
+                        "type": "string",
+                        "description": "The raw text data to embed and upsert."
+                      },
+                      "metadata": {
+                        "type": "object",
+                        "description": "The metadata of the vector. This makes identifying vectors on retrieval easier and can be used with filters on queries."
+                      }
+                    }
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "id",
+                        "data"
+                      ],
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "The id of the vector."
+                        },
+                        "data": {
+                          "type": "string",
+                          "description": "The raw text data to embed and upsert."
+                        },
+                        "metadata": {
+                          "type": "object",
+                          "description": "The metadata of the vector. This makes identifying vectors on retrieval easier and can be used with filters on queries."
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": "string",
+                      "enum": [
+                        "Success"
+                      ],
+                      "description": "Indicates that the operation was successful."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "operationId": "upsert-data/{namespace}=post",
+        "servers": [
+          {
+            "url": "{UPSTASH_VECTOR_REST_URL}",
+            "variables": {
+              "UPSTASH_VECTOR_REST_URL": {
+                "default": "https://example-vector-url.upstash.io",
+                "description": "The base URL for the Upstash Vector REST API"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/fetch/{namespace}": {
+      "get": {
+        "summary": "Fetch Vectors",
+        "description": "Fetches the vectors with the provided ids from the specified namespace.",
+        "parameters": [
+          {
+            "name": "namespace",
+            "in": "path",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The namespace to use. When no namespace is specified, the default namespace will be used."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Array of vector ids to fetch."
+                  },
+                  "includeMetadata": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Whether to include the metadata of the vectors in the response, if any. It is recommended to set this to true to easily identify vectors."
+                  },
+                  "includeVectors": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Whether to include the vector values in the response. It is recommended to set this to false as the vector values can be quite big, and not needed most of the time."
+                  },
+                  "includeData": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Whether to include the data of the vectors in the response, if any."
+                  }
+                },
+                "required": [
+                  "ids"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "The id of the vector."
+                          },
+                          "vector": {
+                            "type": "array",
+                            "items": {
+                              "type": "number"
+                            },
+                            "description": "The vector value."
+                          },
+                          "metadata": {
+                            "type": "object",
+                            "description": "The metadata of the vector, if any."
+                          },
+                          "data": {
+                            "type": "string",
+                            "description": "The unstructured data of the vector, if any."
+                          }
+                        },
+                        "required": [
+                          "id"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "operationId": "fetch/{namespace}=get",
+        "servers": [
+          {
+            "url": "{UPSTASH_VECTOR_REST_URL}",
+            "variables": {
+              "UPSTASH_VECTOR_REST_URL": {
+                "default": "https://example-vector-url.upstash.io"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/random/{namespace}": {
+      "get": {
+        "summary": "Fetch Random Vector",
+        "description": "Fetches a random vector from the specified namespace. If no namespace is specified, the default namespace will be used.",
+        "parameters": [
+          {
+            "name": "namespace",
+            "in": "path",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": ""
+            },
+            "description": "The namespace to use. When no namespace is specified, the default namespace will be used."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "The id of the vector."
+                        },
+                        "vector": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "description": "The vector value."
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "vector"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - When there's a syntax error, an invalid/unsupported command is sent or command execution fails."
+          },
+          "401": {
+            "description": "Unauthorized - When authentication fails; auth token is missing or invalid."
+          },
+          "405": {
+            "description": "Method Not Allowed - When an unsupported HTTP method is used. Only HEAD, GET, POST, and PUT methods are allowed."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "operationId": "random/{namespace}=get",
+        "servers": [
+          {
+            "url": "{UPSTASH_VECTOR_REST_URL}",
+            "variables": {
+              "UPSTASH_VECTOR_REST_URL": {
+                "default": "https://api.upstash.com/v1/vector",
+                "description": "The base URL for the Upstash Vector API"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/delete-namespace/{namespace}": {
+      "delete": {
+        "summary": "Delete a namespace",
+        "description": "Deletes a namespace of an index. The default namespace, which is the empty string \"\", cannot be deleted.",
+        "parameters": [
+          {
+            "name": "namespace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The namespace to delete."
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": "string",
+                      "enum": [
+                        "Success"
+                      ],
+                      "description": "Indicates that the namespace was successfully deleted."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "delete-namespace/{namespace}=delete",
+        "servers": [
+          {
+            "url": "{UPSTASH_VECTOR_REST_URL}",
+            "variables": {
+              "UPSTASH_VECTOR_REST_URL": {
+                "default": "https://your-upstash-vector-url.upstash.io",
+                "description": "The base URL for the Upstash Vector REST API"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/info": {
+      "get": {
+        "summary": "Get Index Info",
+        "description": "Returns information about the index. Note that info will be updated eventually, so it might take some time to see the effect of changes in this endpoint.",
+        "operationId": "getIndexInfo",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "vectorCount": {
+                          "type": "number",
+                          "description": "The number of vectors in the index that are ready to use. This is the total number of vectors across all namespaces."
+                        },
+                        "pendingVectorCount": {
+                          "type": "number",
+                          "description": "The number of vectors in the index that are still processing and not ready to use. This is the total number of pending vectors across all namespaces."
+                        },
+                        "indexSize": {
+                          "type": "number",
+                          "description": "The total size of the index, in bytes."
+                        },
+                        "dimension": {
+                          "type": "number",
+                          "description": "Dimension of the vectors."
+                        },
+                        "similarityFunction": {
+                          "type": "string",
+                          "description": "Name of the similarity function used in indexing and queries."
+                        },
+                        "namespaces": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "vectorCount": {
+                                "type": "number",
+                                "description": "The number of vectors in the namespace that are ready to use."
+                              },
+                              "pendingVectorCount": {
+                                "type": "number",
+                                "description": "The number of vectors in the namespace that are still processing and not ready to use."
+                              }
+                            }
+                          },
+                          "description": "Map of namespace names to namespace info. Every index has at least one namespace called default namespace, whose name is the empty string."
+                        }
+                      },
+                      "required": [
+                        "vectorCount",
+                        "pendingVectorCount",
+                        "indexSize",
+                        "dimension",
+                        "similarityFunction",
+                        "namespaces"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - There's a syntax error, an invalid/unsupported command is sent or command execution fails."
+          },
+          "401": {
+            "description": "Unauthorized - Authentication fails; auth token is missing or invalid."
+          },
+          "405": {
+            "description": "Method Not Allowed - An unsupported HTTP method is used. Only HEAD, GET, POST, and PUT methods are allowed."
+          }
+        },
+        "servers": [
+          {
+            "url": "{UPSTASH_VECTOR_REST_URL}",
+            "variables": {
+              "UPSTASH_VECTOR_REST_URL": {
+                "default": "https://your-vector-db-url.upstash.io"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/update/{namespace}": {
+      "post": {
+        "summary": "Update Vector",
+        "description": "Updates a vector, data or metadata in the specified namespace.",
+        "parameters": [
+          {
+            "name": "namespace",
+            "in": "path",
+            "description": "The namespace to use. When no namespace is specified, the default namespace will be used.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "id"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The id of the vector."
+                  },
+                  "vector": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "description": "The vector value to update to. The vector should have the same dimensions as your index."
+                  },
+                  "data": {
+                    "type": "string",
+                    "description": "The raw text data to update to. If the index is created with an embedding model, this will embed the data into a vector and will also update the vector, along with data."
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "description": "The metadata to update to."
+                  },
+                  "metadataUpdateMode": {
+                    "type": "string",
+                    "enum": [
+                      "OVERWRITE",
+                      "PATCH"
+                    ],
+                    "description": "Whether to overwrite the whole metadata while updating it, or patch the metadata (insert new fields or update or delete existing fields) according to the RFC 7396 JSON Merge Patch algorithm."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "updated": {
+                          "type": "number",
+                          "description": "1 if any vector is updated, 0 otherwise."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - There's a syntax error, an invalid/unsupported command is sent or command execution fails."
+          },
+          "401": {
+            "description": "Unauthorized - Authentication fails; auth token is missing or invalid."
+          },
+          "405": {
+            "description": "Method Not Allowed - An unsupported HTTP method is used."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "operationId": "update/{namespace}=post",
+        "servers": [
+          {
+            "url": "{UPSTASH_VECTOR_REST_URL}",
+            "variables": {
+              "UPSTASH_VECTOR_REST_URL": {
+                "default": "https://example-url.upstash.io"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/list-namespaces": {
+      "get": {
+        "summary": "List Namespaces",
+        "description": "Lists the names of the namespaces of an index.",
+        "operationId": "listNamespaces",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "namespaces": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "Array of namespace names. Every index has at least one namespace called default namespace, whose name is the empty string."
+                        }
+                      },
+                      "required": [
+                        "namespaces"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - When there's a syntax error, an invalid/unsupported command is sent or command execution fails."
+          },
+          "401": {
+            "description": "Unauthorized - When authentication fails; auth token is missing or invalid."
+          },
+          "405": {
+            "description": "Method Not Allowed - When an unsupported HTTP method is used. Only HEAD, GET, POST, and PUT methods are allowed."
+          }
+        },
+        "servers": [
+          {
+            "url": "{UPSTASH_VECTOR_REST_URL}",
+            "variables": {
+              "UPSTASH_VECTOR_REST_URL": {
+                "default": "https://your-vector-endpoint.upstash.io"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/reset/{namespace}": {
+      "delete": {
+        "summary": "Reset Namespace(s)",
+        "description": "Resets one or all namespaces of an index to its initial state by deleting all the vectors. The namespace will be completely empty after /reset is called, but will not be deleted.",
+        "parameters": [
+          {
+            "name": "namespace",
+            "in": "path",
+            "description": "The namespace to use. When no namespace is specified, the default namespace will be used.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          },
+          {
+            "name": "all",
+            "in": "query",
+            "description": "When given, resets all namespaces of an index.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": "string",
+                      "example": "Success"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Syntax error, invalid command, or command execution failure"
+          },
+          "401": {
+            "description": "Unauthorized - Authentication failed; auth token is missing or invalid"
+          },
+          "405": {
+            "description": "Method Not Allowed - Unsupported HTTP method used"
+          }
+        },
+        "operationId": "reset/{namespace}=delete",
+        "servers": [
+          {
+            "url": "{UPSTASH_VECTOR_REST_URL}",
+            "variables": {
+              "UPSTASH_VECTOR_REST_URL": {
+                "default": "https://example-vector.upstash.io"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "tags": {}
+}

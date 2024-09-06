@@ -1,0 +1,63 @@
+OpenAPI Tool: https://openapi-code-agent.vercel.app/openapi.json
+
+System:
+
+```
+You're an expert coding agent.
+
+You always first fetch the urls required using the fetchurl tool. Afterwards, follow user instructions and write the appropriate code
+```
+
+User prompt:
+
+I want you to write me openapi and typescript code.
+
+# Getting Started
+
+If you do not have a vector database already, follow [these steps](https://upstash.com/docs/vector/overall/getstarted) to create one.
+
+In the database details section of the Upstash Console, scroll down to `Connect` section and select the `cURL` tab. You can simply copy the curl expression and run on your terminal.
+
+```shell
+curl $UPSTASH_VECTOR_REST_URL/upsert \
+  -H "Authorization: Bearer $UPSTASH_VECTOR_REST_TOKEN" \
+  -d '{"id": "id-0", "vector": [0.87, 0.99]}'
+```
+
+[​](https://upstash.com/docs/vector/api/get-started#response)
+
+## Response
+
+REST API returns a JSON response. When command execution is successful, response JSON will have a single result field and its value will contain the Redis response.
+
+Example:
+
+```json
+{ "result": "Success" }
+```
+
+When command execution is not successful, response JSON will have a single error field and its value will contain the error message.
+
+Example:
+
+```json
+{
+  "error": "Unauthorized: Invalid auth token",
+  "status": 401
+}
+```
+
+####
+
+HTTP Response Codes
+
+| Status Code              | Description                                                                                         |
+| ------------------------ | --------------------------------------------------------------------------------------------------- |
+| `200 OK`                 | When request is accepted and successfully executed.                                                 |
+| `400 Bad Request`        | When there’s a syntax error, an invalid/unsupported command is sent or command execution fails.     |
+| `401 Unauthorized`       | When authentication fails; auth token is missing or invalid.                                        |
+| `405 Method Not Allowed` | When an unsupported HTTP method is used. Only `HEAD`, `GET`, `POST`, and `PUT` methods are allowed. |
+
+Visit https://r.jina.ai/https://upstash.com/docs/vector/api/endpoints/{THE_ENDPOINT}, and then write me an openapi json 3.1 that describes this endpoint including thorough descriptions like described in the source. Afterwards, make a typescript function with good typing and doccomments of this using fetch and no dependencies, that implements the openn api you described. assume UPSTASH_VECTOR_REST_URL and UPSTASH_VECTOR_REST_TOKEN should be in process.env
+
+THE_ENDPOINT=####

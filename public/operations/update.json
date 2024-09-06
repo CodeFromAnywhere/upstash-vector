@@ -1,0 +1,120 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Upstash Vector API - Update Vector",
+    "version": "1.0.0",
+    "description": "API for updating a vector, data, or metadata in the Upstash Vector database."
+  },
+  "servers": [
+    {
+      "url": "{UPSTASH_VECTOR_REST_URL}",
+      "variables": {
+        "UPSTASH_VECTOR_REST_URL": {
+          "default": "https://example-url.upstash.io"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/update/{namespace}": {
+      "post": {
+        "summary": "Update Vector",
+        "description": "Updates a vector, data or metadata in the specified namespace.",
+        "parameters": [
+          {
+            "name": "namespace",
+            "in": "path",
+            "description": "The namespace to use. When no namespace is specified, the default namespace will be used.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["id"],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The id of the vector."
+                  },
+                  "vector": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "description": "The vector value to update to. The vector should have the same dimensions as your index."
+                  },
+                  "data": {
+                    "type": "string",
+                    "description": "The raw text data to update to. If the index is created with an embedding model, this will embed the data into a vector and will also update the vector, along with data."
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "description": "The metadata to update to."
+                  },
+                  "metadataUpdateMode": {
+                    "type": "string",
+                    "enum": ["OVERWRITE", "PATCH"],
+                    "description": "Whether to overwrite the whole metadata while updating it, or patch the metadata (insert new fields or update or delete existing fields) according to the RFC 7396 JSON Merge Patch algorithm."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "updated": {
+                          "type": "number",
+                          "description": "1 if any vector is updated, 0 otherwise."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - There's a syntax error, an invalid/unsupported command is sent or command execution fails."
+          },
+          "401": {
+            "description": "Unauthorized - Authentication fails; auth token is missing or invalid."
+          },
+          "405": {
+            "description": "Method Not Allowed - An unsupported HTTP method is used."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

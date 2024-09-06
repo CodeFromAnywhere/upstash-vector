@@ -1,0 +1,146 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Upstash Vector API - Query Endpoint",
+    "version": "1.0.0",
+    "description": "API for querying the approximate nearest neighbors of a vector in Upstash Vector database."
+  },
+  "servers": [
+    {
+      "url": "{UPSTASH_VECTOR_REST_URL}",
+      "variables": {
+        "UPSTASH_VECTOR_REST_URL": {
+          "default": "https://your-vector-api-url.upstash.io"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/query/{namespace}": {
+      "post": {
+        "summary": "Query Vectors",
+        "description": "Queries the approximate nearest neighbors of a vector.",
+        "parameters": [
+          {
+            "name": "namespace",
+            "in": "path",
+            "description": "The namespace to use. When no namespace is specified, the default namespace will be used.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["vector"],
+                "properties": {
+                  "vector": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "description": "The query vector. Should have the same dimensions as your index."
+                  },
+                  "topK": {
+                    "type": "integer",
+                    "default": 10,
+                    "description": "The total number of vectors to receive as a query result."
+                  },
+                  "includeMetadata": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Whether to include the metadata of the vectors in the response."
+                  },
+                  "includeVectors": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Whether to include the vector values in the response."
+                  },
+                  "includeData": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Whether to include the data of the vectors in the response."
+                  },
+                  "filter": {
+                    "type": "string",
+                    "description": "Metadata filter to apply."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "The id of the vector."
+                          },
+                          "score": {
+                            "type": "number",
+                            "description": "The similarity score of the vector."
+                          },
+                          "vector": {
+                            "type": "array",
+                            "items": {
+                              "type": "number"
+                            },
+                            "description": "The vector value."
+                          },
+                          "metadata": {
+                            "type": "object",
+                            "description": "The metadata of the vector, if any."
+                          },
+                          "data": {
+                            "type": "string",
+                            "description": "The unstructured data of the vector, if any."
+                          }
+                        },
+                        "required": ["id", "score"]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "compileOnSave": true,
+  "include": ["public"],
+  "compilerOptions": {
+    "lib": ["es2022", "DOM"],
+    "types": ["node"],
+    "strict": true,
+    "outDir": "build"
+  }
+}

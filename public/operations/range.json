@@ -1,0 +1,142 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Upstash Vector API - Range Vectors",
+    "version": "1.0.0",
+    "description": "API for ranging over vectors in the Upstash Vector database."
+  },
+  "servers": [
+    {
+      "url": "{UPSTASH_VECTOR_REST_URL}",
+      "variables": {
+        "UPSTASH_VECTOR_REST_URL": {
+          "default": "https://example-vector-url.upstash.io"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/range/{namespace}": {
+      "get": {
+        "summary": "Range Vectors",
+        "description": "Ranges over vectors starting (inclusive) from a cursor until the end of the vectors or given limit.",
+        "parameters": [
+          {
+            "name": "namespace",
+            "in": "path",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The namespace to use. When no namespace is specified, the default namespace will be used."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["cursor", "limit"],
+                "properties": {
+                  "cursor": {
+                    "type": "string",
+                    "description": "The offset to the last retrieved vector. Should be set to \"0\" in the initial range."
+                  },
+                  "limit": {
+                    "type": "integer",
+                    "description": "The number of maximum vectors that you want in the response of range. (page size)"
+                  },
+                  "includeMetadata": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Whether to include the metadata of the vectors in the response, if any."
+                  },
+                  "includeVectors": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Whether to include the vector values in the response."
+                  },
+                  "includeData": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Whether to include the data of the vectors in the response, if any."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["nextCursor", "vectors"],
+                  "properties": {
+                    "nextCursor": {
+                      "type": "string",
+                      "description": "The offset for the next range. You should place this in the `cursor` field for the next range. It will be equal to empty string if there are no other vectors to range."
+                    },
+                    "vectors": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": ["id", "vector"],
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "The id of the vector."
+                          },
+                          "vector": {
+                            "type": "array",
+                            "items": {
+                              "type": "number"
+                            },
+                            "description": "The vector value."
+                          },
+                          "metadata": {
+                            "type": "object",
+                            "description": "The metadata of the vector, if any."
+                          },
+                          "data": {
+                            "type": "string",
+                            "description": "The unstructured data of the vector, if any."
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

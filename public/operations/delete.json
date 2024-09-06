@@ -1,0 +1,91 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Upstash Vector API - Delete Vectors",
+    "version": "1.0.0",
+    "description": "API for deleting vectors from the Upstash Vector database."
+  },
+  "servers": [
+    {
+      "url": "{UPSTASH_VECTOR_REST_URL}",
+      "variables": {
+        "UPSTASH_VECTOR_REST_URL": {
+          "default": "https://your-vector-rest-url.upstash.io"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/delete/{namespace}": {
+      "delete": {
+        "summary": "Delete Vectors",
+        "description": "Deletes the vectors with the given ids from the specified namespace.",
+        "parameters": [
+          {
+            "name": "namespace",
+            "in": "path",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The namespace to use. When no namespace is specified, the default namespace will be used."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "A vector id or array of vector ids to delete."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "deleted": {
+                      "type": "integer",
+                      "description": "The number of the successfully deleted vectors."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - When there's a syntax error, an invalid/unsupported command is sent or command execution fails."
+          },
+          "401": {
+            "description": "Unauthorized - When authentication fails; auth token is missing or invalid."
+          },
+          "405": {
+            "description": "Method Not Allowed - When an unsupported HTTP method is used."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

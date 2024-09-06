@@ -1,0 +1,136 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Upstash Vector API - Fetch Vectors",
+    "version": "1.0.0",
+    "description": "API for fetching vectors from Upstash Vector database"
+  },
+  "servers": [
+    {
+      "url": "{UPSTASH_VECTOR_REST_URL}",
+      "variables": {
+        "UPSTASH_VECTOR_REST_URL": {
+          "default": "https://example-vector-url.upstash.io"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/fetch/{namespace}": {
+      "get": {
+        "summary": "Fetch Vectors",
+        "description": "Fetches the vectors with the provided ids from the specified namespace.",
+        "parameters": [
+          {
+            "name": "namespace",
+            "in": "path",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The namespace to use. When no namespace is specified, the default namespace will be used."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Array of vector ids to fetch."
+                  },
+                  "includeMetadata": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Whether to include the metadata of the vectors in the response, if any. It is recommended to set this to true to easily identify vectors."
+                  },
+                  "includeVectors": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Whether to include the vector values in the response. It is recommended to set this to false as the vector values can be quite big, and not needed most of the time."
+                  },
+                  "includeData": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Whether to include the data of the vectors in the response, if any."
+                  }
+                },
+                "required": ["ids"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "The id of the vector."
+                          },
+                          "vector": {
+                            "type": "array",
+                            "items": {
+                              "type": "number"
+                            },
+                            "description": "The vector value."
+                          },
+                          "metadata": {
+                            "type": "object",
+                            "description": "The metadata of the vector, if any."
+                          },
+                          "data": {
+                            "type": "string",
+                            "description": "The unstructured data of the vector, if any."
+                          }
+                        },
+                        "required": ["id"]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Upstash Vector API",
+    "version": "1.0.0",
+    "description": "API for interacting with Upstash Vector database"
+  },
+  "servers": [
+    {
+      "url": "{UPSTASH_VECTOR_REST_URL}",
+      "variables": {
+        "UPSTASH_VECTOR_REST_URL": {
+          "default": "https://your-vector-endpoint.upstash.io"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/list-namespaces": {
+      "get": {
+        "summary": "List Namespaces",
+        "description": "Lists the names of the namespaces of an index.",
+        "operationId": "listNamespaces",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "namespaces": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "Array of namespace names. Every index has at least one namespace called default namespace, whose name is the empty string."
+                        }
+                      },
+                      "required": ["namespaces"]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - When there's a syntax error, an invalid/unsupported command is sent or command execution fails."
+          },
+          "401": {
+            "description": "Unauthorized - When authentication fails; auth token is missing or invalid."
+          },
+          "405": {
+            "description": "Method Not Allowed - When an unsupported HTTP method is used. Only HEAD, GET, POST, and PUT methods are allowed."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

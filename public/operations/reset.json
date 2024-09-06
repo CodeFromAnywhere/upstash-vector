@@ -1,0 +1,87 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Upstash Vector API - Reset Namespace(s)",
+    "description": "API for resetting one or all namespaces of an Upstash Vector index to its initial state by deleting all the vectors.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "{UPSTASH_VECTOR_REST_URL}",
+      "variables": {
+        "UPSTASH_VECTOR_REST_URL": {
+          "default": "https://example-vector.upstash.io"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/reset/{namespace}": {
+      "delete": {
+        "summary": "Reset Namespace(s)",
+        "description": "Resets one or all namespaces of an index to its initial state by deleting all the vectors. The namespace will be completely empty after /reset is called, but will not be deleted.",
+        "parameters": [
+          {
+            "name": "namespace",
+            "in": "path",
+            "description": "The namespace to use. When no namespace is specified, the default namespace will be used.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          },
+          {
+            "name": "all",
+            "in": "query",
+            "description": "When given, resets all namespaces of an index.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": "string",
+                      "example": "Success"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Syntax error, invalid command, or command execution failure"
+          },
+          "401": {
+            "description": "Unauthorized - Authentication failed; auth token is missing or invalid"
+          },
+          "405": {
+            "description": "Method Not Allowed - Unsupported HTTP method used"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

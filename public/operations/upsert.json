@@ -1,0 +1,163 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Upstash Vector API - Upsert Vectors",
+    "version": "1.0.0",
+    "description": "API for upserting (inserting or updating) vectors in the Upstash Vector database."
+  },
+  "servers": [
+    {
+      "url": "{UPSTASH_VECTOR_REST_URL}",
+      "variables": {
+        "UPSTASH_VECTOR_REST_URL": {
+          "default": "https://example.upstash.com/vector",
+          "description": "The base URL for the Upstash Vector API"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/upsert/{namespace}": {
+      "post": {
+        "summary": "Upsert Vectors",
+        "description": "Upserts (inserts or updates) one or multiple vectors in the specified namespace.",
+        "parameters": [
+          {
+            "name": "namespace",
+            "in": "path",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The namespace to use. When no namespace is specified, the default namespace will be used."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/VectorUpsert"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/VectorUpsert"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "VectorUpsert": {
+        "type": "object",
+        "required": ["id", "vector"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the vector."
+          },
+          "vector": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "description": "The vector value. Should have the same dimensions as your index."
+          },
+          "metadata": {
+            "type": "object",
+            "description": "The metadata of the vector. This makes identifying vectors on retrieval easier and can be used with filters on queries."
+          },
+          "data": {
+            "type": "string",
+            "description": "The data of the vector. This is an unstructured raw text data, which can be anything associated with this vector."
+          }
+        }
+      },
+      "SuccessResponse": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "type": "string",
+            "enum": ["Success"],
+            "description": "Indicates that the operation was successful."
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error message describing the issue."
+          },
+          "status": {
+            "type": "integer",
+            "description": "HTTP status code of the error."
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}
