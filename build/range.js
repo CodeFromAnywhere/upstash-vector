@@ -57,7 +57,7 @@ function rangeVectors() {
                         throw new Error("UPSTASH_VECTOR_REST_TOKEN is not set in the environment variables");
                     }
                     return [4 /*yield*/, fetch(url, {
-                            method: "GET",
+                            method: "POST",
                             headers: {
                                 Authorization: "Bearer ".concat(token),
                                 "Content-Type": "application/json",

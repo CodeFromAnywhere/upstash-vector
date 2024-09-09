@@ -1,7 +1,7 @@
 /**
  * Represents the query parameters for the vector search.
  */
-interface QueryParams {
+export interface QueryParams {
   /** The query vector. Should have the same dimensions as your index. */
   vector: number[];
   /** The total number of vectors to receive as a query result. Default is 10. */
@@ -19,7 +19,7 @@ interface QueryParams {
 /**
  * Represents a single result item from the vector query.
  */
-interface QueryResultItem {
+export interface QueryResultItem {
   /** The id of the vector. */
   id: string;
   /** The similarity score of the vector. */
@@ -35,7 +35,7 @@ interface QueryResultItem {
 /**
  * Represents the response from the vector query API.
  */
-interface QueryResponse {
+export interface QueryResponse {
   result: QueryResultItem[];
 }
 

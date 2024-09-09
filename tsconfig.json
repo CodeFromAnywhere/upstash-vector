@@ -5,6 +5,7 @@
     "lib": ["es2022", "DOM"],
     "types": ["node"],
     "strict": true,
-    "outDir": "build"
+    "outDir": "build",
+    "declaration": true
   }
 }

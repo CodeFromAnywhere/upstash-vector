@@ -52,7 +52,7 @@ function fetchVectors(request, namespace) {
                 case 0:
                     url = new URL("".concat(process.env.UPSTASH_VECTOR_REST_URL, "/fetch").concat(namespace ? "/".concat(namespace) : ""));
                     return [4 /*yield*/, fetch(url, {
-                            method: "GET",
+                            method: "POST",
                             headers: {
                                 Authorization: "Bearer ".concat(process.env.UPSTASH_VECTOR_REST_TOKEN),
                                 "Content-Type": "application/json",

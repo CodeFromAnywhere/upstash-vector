@@ -1,7 +1,7 @@
 /**
  * Represents the response from the Fetch Random Vector API.
  */
-interface FetchRandomVectorResponse {
+export interface FetchRandomVectorResponse {
   result: {
     id: string;
     vector: number[];

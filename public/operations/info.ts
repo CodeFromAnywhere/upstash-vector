@@ -1,7 +1,7 @@
 /**
  * Represents the structure of a namespace in the index info response.
  */
-interface NamespaceInfo {
+export interface NamespaceInfo {
   vectorCount: number;
   pendingVectorCount: number;
 }
@@ -9,7 +9,7 @@ interface NamespaceInfo {
 /**
  * Represents the structure of the index info response.
  */
-interface IndexInfo {
+export interface IndexInfo {
   vectorCount: number;
   pendingVectorCount: number;
   indexSize: number;

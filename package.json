@@ -1,11 +1,9 @@
 {
   "name": "upstash-vector",
   "main": "build/index.js",
-  "version": "0.0.1",
+  "version": "0.0.7",
   "devDependencies": {
     "@types/node": "^22.5.4"
   },
-  "dependencies": {
-    "openapi-util": "^0.0.155"
-  }
+  "dependencies": {}
 }

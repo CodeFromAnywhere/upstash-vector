@@ -1,7 +1,7 @@
 /**
  * Interface for the update vector request body
  */
-interface UpdateVectorRequest {
+export interface UpdateVectorRequest {
   id: string;
   vector?: number[];
   data?: string;
@@ -12,7 +12,7 @@ interface UpdateVectorRequest {
 /**
  * Interface for the update vector response
  */
-interface UpdateVectorResponse {
+export interface UpdateVectorResponse {
   result: {
     updated: number;
   };

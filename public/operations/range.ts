@@ -1,7 +1,7 @@
 /**
  * Interface for the request body of the range vectors API
  */
-interface RangeVectorsRequest {
+export interface RangeVectorsRequest {
   cursor: string;
   limit: number;
   includeMetadata?: boolean;
@@ -22,7 +22,7 @@ interface Vector {
 /**
  * Interface for the response of the range vectors API
  */
-interface RangeVectorsResponse {
+export interface RangeVectorsResponse {
   nextCursor: string;
   vectors: Vector[];
 }
@@ -48,7 +48,7 @@ export async function rangeVectors(
   }
 
   const response = await fetch(url, {
-    method: "GET",
+    method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",

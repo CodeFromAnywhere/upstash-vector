@@ -1,7 +1,7 @@
 /**
  * Represents the data structure for upserting a single item.
  */
-interface UpsertDataItem {
+export interface UpsertDataItem {
   /** The id of the vector. */
   id: string;
   /** The raw text data to embed and upsert. */
@@ -13,7 +13,7 @@ interface UpsertDataItem {
 /**
  * Represents the successful response from the upsert operation.
  */
-interface SuccessResponse {
+export interface SuccessResponse {
   result: "Success";
 }
 

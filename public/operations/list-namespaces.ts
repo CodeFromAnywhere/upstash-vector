@@ -1,7 +1,7 @@
 /**
  * Response type for the listNamespaces function
  */
-type ListNamespacesResponse = {
+export type ListNamespacesResponse = {
   result: {
     namespaces: string[];
   };
@@ -10,7 +10,7 @@ type ListNamespacesResponse = {
 /**
  * Error type for the listNamespaces function
  */
-type ListNamespacesError = {
+export type ListNamespacesError = {
   error: string;
   status: number;
 };

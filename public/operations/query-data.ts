@@ -1,7 +1,7 @@
 /**
  * Interface for the query data request parameters
  */
-interface QueryDataParams {
+export interface QueryDataParams {
   data: string;
   topK: number;
   includeMetadata?: boolean;
@@ -14,7 +14,7 @@ interface QueryDataParams {
 /**
  * Interface for the query data response
  */
-interface QueryDataResponse {
+export interface QueryDataResponse {
   scores: Array<{
     id: string;
     score: number;

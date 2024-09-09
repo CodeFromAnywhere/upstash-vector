@@ -1,7 +1,7 @@
 /**
  * Interface representing the request parameters for fetching vectors
  */
-interface FetchVectorsRequest {
+export interface FetchVectorsRequest {
   ids: string[];
   includeMetadata?: boolean;
   includeVectors?: boolean;
@@ -16,6 +16,7 @@ interface Vector {
   vector?: number[];
   metadata?: Record<string, unknown>;
   data?: string;
+  score?: number;
 }
 
 /**
@@ -43,7 +44,7 @@ export async function fetchVectors(
   );
 
   const response = await fetch(url, {
-    method: "GET",
+    method: "POST",
     headers: {
       Authorization: `Bearer ${process.env.UPSTASH_VECTOR_REST_TOKEN}`,
       "Content-Type": "application/json",

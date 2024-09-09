@@ -22,7 +22,7 @@ interface SuccessResponse {
 /**
  * Represents an error response from the API.
  */
-interface ErrorResponse {
+export interface ErrorResponse {
   error: string;
   status: number;
 }
