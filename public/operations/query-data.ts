@@ -12,27 +12,20 @@ export interface QueryDataParams {
 }
 
 /**
- * Interface for the query data response
- */
-export interface QueryDataResponse {
-  scores: Array<{
-    id: string;
-    score: number;
-    vector?: number[];
-    metadata?: Record<string, any>;
-    data?: string;
-  }>;
-}
-
-/**
  * Function to query data from Upstash Vector database
  * @param params - Query parameters
  * @returns Promise resolving to QueryDataResponse
  * @throws Error if the request fails
  */
-export async function queryData(
-  params: QueryDataParams,
-): Promise<QueryDataResponse> {
+export async function queryData(params: QueryDataParams): Promise<
+  Array<{
+    id: string;
+    score: number;
+    vector?: number[];
+    metadata?: Record<string, any>;
+    data?: string;
+  }>
+> {
   const {
     data,
     topK,
@@ -73,7 +66,7 @@ export async function queryData(
   }
 
   const result = await response.json();
-  return result as QueryDataResponse;
+  return result.result;
 }
 
 // Example usage:

@@ -78,7 +78,7 @@ function queryData(params) {
                     return [4 /*yield*/, response.json()];
                 case 2:
                     result = _f.sent();
-                    return [2 /*return*/, result];
+                    return [2 /*return*/, result.result];
             }
         });
     });
