@@ -75,7 +75,7 @@ function rangeVectors() {
                     if ("error" in data) {
                         throw new Error("API error: ".concat(data.error));
                     }
-                    return [2 /*return*/, data];
+                    return [2 /*return*/, data.result];
             }
         });
     });

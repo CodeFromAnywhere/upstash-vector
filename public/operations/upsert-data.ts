@@ -30,17 +30,22 @@ export async function upsertData(
   namespace: string = "",
 ): Promise<SuccessResponse> {
   const url = `${process.env.UPSTASH_VECTOR_REST_URL}/upsert-data/${namespace}`;
+  const body = JSON.stringify(data, undefined, 2);
   const response = await fetch(url, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${process.env.UPSTASH_VECTOR_REST_TOKEN}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(data),
+    body,
   });
 
   if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+    const text = await response.text();
+    console.log(url, text, body);
+    throw new Error(
+      `HTTP error! status: ${response.status} - ${response.statusText}`,
+    );
   }
 
   const result = await response.json();

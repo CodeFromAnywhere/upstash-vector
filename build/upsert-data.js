@@ -47,27 +47,31 @@ exports.upsertData = upsertData;
  */
 function upsertData(data_1) {
     return __awaiter(this, arguments, void 0, function (data, namespace) {
-        var url, response, result;
+        var url, body, response, text, result;
         if (namespace === void 0) { namespace = ""; }
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     url = "".concat(process.env.UPSTASH_VECTOR_REST_URL, "/upsert-data/").concat(namespace);
+                    body = JSON.stringify(data, undefined, 2);
                     return [4 /*yield*/, fetch(url, {
                             method: "POST",
                             headers: {
                                 Authorization: "Bearer ".concat(process.env.UPSTASH_VECTOR_REST_TOKEN),
                                 "Content-Type": "application/json",
                             },
-                            body: JSON.stringify(data),
+                            body: body,
                         })];
                 case 1:
                     response = _a.sent();
-                    if (!response.ok) {
-                        throw new Error("HTTP error! status: ".concat(response.status));
-                    }
-                    return [4 /*yield*/, response.json()];
+                    if (!!response.ok) return [3 /*break*/, 3];
+                    return [4 /*yield*/, response.text()];
                 case 2:
+                    text = _a.sent();
+                    console.log(url, text, body);
+                    throw new Error("HTTP error! status: ".concat(response.status, " - ").concat(response.statusText));
+                case 3: return [4 /*yield*/, response.json()];
+                case 4:
                     result = _a.sent();
                     if (result.result !== "Success") {
                         throw new Error("Unexpected response: ".concat(JSON.stringify(result)));

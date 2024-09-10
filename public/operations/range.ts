@@ -66,7 +66,7 @@ export async function rangeVectors(
     throw new Error(`API error: ${data.error}`);
   }
 
-  return data as RangeVectorsResponse;
+  return data.result as RangeVectorsResponse;
 }
 
 // Example usage:
