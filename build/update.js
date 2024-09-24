@@ -47,7 +47,7 @@ exports.updateVector = updateVector;
  */
 function updateVector(updateData_1) {
     return __awaiter(this, arguments, void 0, function (updateData, namespace) {
-        var url, token, response, errorMessage, errorData, _a, data;
+        var url, token, response, errorMessage, errorData, _a, result;
         if (namespace === void 0) { namespace = ""; }
         return __generator(this, function (_b) {
             switch (_b.label) {
@@ -82,11 +82,11 @@ function updateVector(updateData_1) {
                     _a = _b.sent();
                     errorMessage = "HTTP error! status: ".concat(response.status);
                     return [3 /*break*/, 5];
-                case 5: throw new Error(errorMessage);
+                case 5: return [2 /*return*/, { status: response.status, message: errorMessage }];
                 case 6: return [4 /*yield*/, response.json()];
                 case 7:
-                    data = _b.sent();
-                    return [2 /*return*/, data];
+                    result = (_b.sent()).result;
+                    return [2 /*return*/, { status: response.status, result: result }];
             }
         });
     });

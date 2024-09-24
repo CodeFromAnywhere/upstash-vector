@@ -1,15 +1,37 @@
 {
-  "info": {
-    "title": "Upstash Vector API - Delete Vectors",
-    "version": "1.0.0",
-    "description": "API for deleting vectors from the Upstash Vector database."
-  },
   "openapi": "3.1.0",
+  "info": {
+    "title": "Upstash Vector API",
+    "version": "1.0.0",
+    "description": "API for managing vectors in the Upstash Vector database."
+  },
+  "servers": [
+    {
+      "url": "{UPSTASH_VECTOR_REST_URL}",
+      "variables": {
+        "UPSTASH_VECTOR_REST_URL": {
+          "description": "The base URL for the Upstash Vector REST API"
+        }
+      }
+    }
+  ],
+  "security": [{ "bearerAuth": [] }],
+  "components": {
+    "schemas": {},
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "tags": {},
   "paths": {
     "/delete/{namespace}": {
       "delete": {
         "summary": "Delete Vectors",
         "description": "Deletes the vectors with the given ids from the specified namespace.",
+        "operationId": "deleteVectors",
         "parameters": [
           {
             "name": "namespace",
@@ -61,29 +83,14 @@
           "405": {
             "description": "Method Not Allowed - When an unsupported HTTP method is used."
           }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "operationId": "delete/{namespace}=delete",
-        "servers": [
-          {
-            "url": "{UPSTASH_VECTOR_REST_URL}",
-            "variables": {
-              "UPSTASH_VECTOR_REST_URL": {
-                "default": "https://your-vector-rest-url.upstash.io"
-              }
-            }
-          }
-        ]
+        }
       }
     },
     "/query-data/{namespace}": {
       "post": {
         "summary": "Query Data",
         "description": "Queries the approximate nearest neighbors of a raw text data after embedding it.",
+        "operationId": "queryData",
         "parameters": [
           {
             "name": "namespace",
@@ -101,10 +108,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "data",
-                  "topK"
-                ],
+                "required": ["data", "topK"],
                 "properties": {
                   "data": {
                     "type": "string",
@@ -152,10 +156,7 @@
                       "type": "array",
                       "items": {
                         "type": "object",
-                        "required": [
-                          "id",
-                          "score"
-                        ],
+                        "required": ["id", "score"],
                         "properties": {
                           "id": {
                             "type": "string",
@@ -197,29 +198,14 @@
           "405": {
             "description": "Method Not Allowed"
           }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "operationId": "query-data/{namespace}=post",
-        "servers": [
-          {
-            "url": "{UPSTASH_VECTOR_REST_URL}",
-            "variables": {
-              "UPSTASH_VECTOR_REST_URL": {
-                "default": "https://your-vector-db-url.upstash.io"
-              }
-            }
-          }
-        ]
+        }
       }
     },
     "/range/{namespace}": {
       "get": {
         "summary": "Range Vectors",
         "description": "Ranges over vectors starting (inclusive) from a cursor until the end of the vectors or given limit.",
+        "operationId": "rangeVectors",
         "parameters": [
           {
             "name": "namespace",
@@ -237,10 +223,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "cursor",
-                  "limit"
-                ],
+                "required": ["cursor", "limit"],
                 "properties": {
                   "cursor": {
                     "type": "string",
@@ -277,10 +260,7 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": [
-                    "nextCursor",
-                    "vectors"
-                  ],
+                  "required": ["nextCursor", "vectors"],
                   "properties": {
                     "nextCursor": {
                       "type": "string",
@@ -290,10 +270,7 @@
                       "type": "array",
                       "items": {
                         "type": "object",
-                        "required": [
-                          "id",
-                          "vector"
-                        ],
+                        "required": ["id", "vector"],
                         "properties": {
                           "id": {
                             "type": "string",
@@ -331,29 +308,14 @@
           "405": {
             "description": "Method Not Allowed"
           }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "operationId": "range/{namespace}=get",
-        "servers": [
-          {
-            "url": "{UPSTASH_VECTOR_REST_URL}",
-            "variables": {
-              "UPSTASH_VECTOR_REST_URL": {
-                "default": "https://example-vector-url.upstash.io"
-              }
-            }
-          }
-        ]
+        }
       }
     },
     "/query/{namespace}": {
       "post": {
         "summary": "Query Vectors",
         "description": "Queries the approximate nearest neighbors of a vector.",
+        "operationId": "queryVectors",
         "parameters": [
           {
             "name": "namespace",
@@ -371,9 +333,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "vector"
-                ],
+                "required": ["vector"],
                 "properties": {
                   "vector": {
                     "type": "array",
@@ -448,10 +408,7 @@
                             "description": "The unstructured data of the vector, if any."
                           }
                         },
-                        "required": [
-                          "id",
-                          "score"
-                        ]
+                        "required": ["id", "score"]
                       }
                     }
                   }
@@ -465,29 +422,14 @@
           "401": {
             "description": "Unauthorized"
           }
-        },
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "operationId": "query/{namespace}=post",
-        "servers": [
-          {
-            "url": "{UPSTASH_VECTOR_REST_URL}",
-            "variables": {
-              "UPSTASH_VECTOR_REST_URL": {
-                "default": "https://your-vector-api-url.upstash.io"
-              }
-            }
-          }
-        ]
+        }
       }
     },
     "/upsert/{namespace}": {
       "post": {
         "summary": "Upsert Vectors",
         "description": "Upserts (inserts or updates) one or multiple vectors in the specified namespace.",
+        "operationId": "upsertVectors",
         "parameters": [
           {
             "name": "namespace",
@@ -507,10 +449,7 @@
                 "oneOf": [
                   {
                     "type": "object",
-                    "required": [
-                      "id",
-                      "vector"
-                    ],
+                    "required": ["id", "vector"],
                     "properties": {
                       "id": {
                         "type": "string",
@@ -537,10 +476,7 @@
                     "type": "array",
                     "items": {
                       "type": "object",
-                      "required": [
-                        "id",
-                        "vector"
-                      ],
+                      "required": ["id", "vector"],
                       "properties": {
                         "id": {
                           "type": "string",
@@ -579,9 +515,7 @@
                   "properties": {
                     "result": {
                       "type": "string",
-                      "enum": [
-                        "Success"
-                      ],
+                      "enum": ["Success"],
                       "description": "Indicates that the operation was successful."
                     }
                   }
@@ -590,89 +524,22 @@
             }
           },
           "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "description": "Error message describing the issue."
-                    },
-                    "status": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error."
-                    }
-                  }
-                }
-              }
-            }
+            "description": "Bad Request"
           },
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "description": "Error message describing the issue."
-                    },
-                    "status": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error."
-                    }
-                  }
-                }
-              }
-            }
+            "description": "Unauthorized"
           },
           "422": {
-            "description": "Unprocessable Entity",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "description": "Error message describing the issue."
-                    },
-                    "status": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error."
-                    }
-                  }
-                }
-              }
-            }
+            "description": "Unprocessable Entity"
           }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "operationId": "upsert/{namespace}=post",
-        "servers": [
-          {
-            "url": "{UPSTASH_VECTOR_REST_URL}",
-            "variables": {
-              "UPSTASH_VECTOR_REST_URL": {
-                "default": "https://example.upstash.com/vector",
-                "description": "The base URL for the Upstash Vector API"
-              }
-            }
-          }
-        ]
+        }
       }
     },
     "/upsert-data/{namespace}": {
       "post": {
         "summary": "Upsert Data",
         "description": "Upserts (inserts or updates) the raw text data after embedding it.",
+        "operationId": "upsertData",
         "parameters": [
           {
             "name": "namespace",
@@ -693,10 +560,7 @@
                 "oneOf": [
                   {
                     "type": "object",
-                    "required": [
-                      "id",
-                      "data"
-                    ],
+                    "required": ["id", "data"],
                     "properties": {
                       "id": {
                         "type": "string",
@@ -716,10 +580,7 @@
                     "type": "array",
                     "items": {
                       "type": "object",
-                      "required": [
-                        "id",
-                        "data"
-                      ],
+                      "required": ["id", "data"],
                       "properties": {
                         "id": {
                           "type": "string",
@@ -751,9 +612,7 @@
                   "properties": {
                     "result": {
                       "type": "string",
-                      "enum": [
-                        "Success"
-                      ],
+                      "enum": ["Success"],
                       "description": "Indicates that the operation was successful."
                     }
                   }
@@ -764,30 +623,14 @@
           "422": {
             "description": "Unprocessable Entity"
           }
-        },
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "operationId": "upsert-data/{namespace}=post",
-        "servers": [
-          {
-            "url": "{UPSTASH_VECTOR_REST_URL}",
-            "variables": {
-              "UPSTASH_VECTOR_REST_URL": {
-                "default": "https://example-vector-url.upstash.io",
-                "description": "The base URL for the Upstash Vector REST API"
-              }
-            }
-          }
-        ]
+        }
       }
     },
     "/fetch/{namespace}": {
       "get": {
         "summary": "Fetch Vectors",
         "description": "Fetches the vectors with the provided ids from the specified namespace.",
+        "operationId": "fetchVectors",
         "parameters": [
           {
             "name": "namespace",
@@ -829,9 +672,7 @@
                     "description": "Whether to include the data of the vectors in the response, if any."
                   }
                 },
-                "required": [
-                  "ids"
-                ]
+                "required": ["ids"]
               }
             }
           }
@@ -869,9 +710,7 @@
                             "description": "The unstructured data of the vector, if any."
                           }
                         },
-                        "required": [
-                          "id"
-                        ]
+                        "required": ["id"]
                       }
                     }
                   }
@@ -888,29 +727,14 @@
           "405": {
             "description": "Method Not Allowed"
           }
-        },
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "operationId": "fetch/{namespace}=get",
-        "servers": [
-          {
-            "url": "{UPSTASH_VECTOR_REST_URL}",
-            "variables": {
-              "UPSTASH_VECTOR_REST_URL": {
-                "default": "https://example-vector-url.upstash.io"
-              }
-            }
-          }
-        ]
+        }
       }
     },
     "/random/{namespace}": {
       "get": {
         "summary": "Fetch Random Vector",
         "description": "Fetches a random vector from the specified namespace. If no namespace is specified, the default namespace will be used.",
+        "operationId": "fetchRandomVector",
         "parameters": [
           {
             "name": "namespace",
@@ -946,10 +770,7 @@
                           "description": "The vector value."
                         }
                       },
-                      "required": [
-                        "id",
-                        "vector"
-                      ]
+                      "required": ["id", "vector"]
                     }
                   }
                 }
@@ -965,30 +786,14 @@
           "405": {
             "description": "Method Not Allowed - When an unsupported HTTP method is used. Only HEAD, GET, POST, and PUT methods are allowed."
           }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "operationId": "random/{namespace}=get",
-        "servers": [
-          {
-            "url": "{UPSTASH_VECTOR_REST_URL}",
-            "variables": {
-              "UPSTASH_VECTOR_REST_URL": {
-                "default": "https://api.upstash.com/v1/vector",
-                "description": "The base URL for the Upstash Vector API"
-              }
-            }
-          }
-        ]
+        }
       }
     },
     "/delete-namespace/{namespace}": {
       "delete": {
         "summary": "Delete a namespace",
         "description": "Deletes a namespace of an index. The default namespace, which is the empty string \"\", cannot be deleted.",
+        "operationId": "deleteNamespace",
         "parameters": [
           {
             "name": "namespace",
@@ -1000,11 +805,7 @@
             "description": "The namespace to delete."
           }
         ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
+
         "responses": {
           "200": {
             "description": "Successful response",
@@ -1015,9 +816,7 @@
                   "properties": {
                     "result": {
                       "type": "string",
-                      "enum": [
-                        "Success"
-                      ],
+                      "enum": ["Success"],
                       "description": "Indicates that the namespace was successfully deleted."
                     }
                   }
@@ -1058,19 +857,7 @@
               }
             }
           }
-        },
-        "operationId": "delete-namespace/{namespace}=delete",
-        "servers": [
-          {
-            "url": "{UPSTASH_VECTOR_REST_URL}",
-            "variables": {
-              "UPSTASH_VECTOR_REST_URL": {
-                "default": "https://your-upstash-vector-url.upstash.io",
-                "description": "The base URL for the Upstash Vector REST API"
-              }
-            }
-          }
-        ]
+        }
       }
     },
     "/info": {
@@ -1078,11 +865,7 @@
         "summary": "Get Index Info",
         "description": "Returns information about the index. Note that info will be updated eventually, so it might take some time to see the effect of changes in this endpoint.",
         "operationId": "getIndexInfo",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
+
         "responses": {
           "200": {
             "description": "Successful response",
@@ -1155,23 +938,14 @@
           "405": {
             "description": "Method Not Allowed - An unsupported HTTP method is used. Only HEAD, GET, POST, and PUT methods are allowed."
           }
-        },
-        "servers": [
-          {
-            "url": "{UPSTASH_VECTOR_REST_URL}",
-            "variables": {
-              "UPSTASH_VECTOR_REST_URL": {
-                "default": "https://your-vector-db-url.upstash.io"
-              }
-            }
-          }
-        ]
+        }
       }
     },
     "/update/{namespace}": {
       "post": {
         "summary": "Update Vector",
         "description": "Updates a vector, data or metadata in the specified namespace.",
+        "operationId": "updateVector",
         "parameters": [
           {
             "name": "namespace",
@@ -1190,9 +964,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "id"
-                ],
+                "required": ["id"],
                 "properties": {
                   "id": {
                     "type": "string",
@@ -1215,10 +987,7 @@
                   },
                   "metadataUpdateMode": {
                     "type": "string",
-                    "enum": [
-                      "OVERWRITE",
-                      "PATCH"
-                    ],
+                    "enum": ["OVERWRITE", "PATCH"],
                     "description": "Whether to overwrite the whole metadata while updating it, or patch the metadata (insert new fields or update or delete existing fields) according to the RFC 7396 JSON Merge Patch algorithm."
                   }
                 }
@@ -1257,23 +1026,7 @@
           "405": {
             "description": "Method Not Allowed - An unsupported HTTP method is used."
           }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "operationId": "update/{namespace}=post",
-        "servers": [
-          {
-            "url": "{UPSTASH_VECTOR_REST_URL}",
-            "variables": {
-              "UPSTASH_VECTOR_REST_URL": {
-                "default": "https://example-url.upstash.io"
-              }
-            }
-          }
-        ]
+        }
       }
     },
     "/list-namespaces": {
@@ -1281,11 +1034,7 @@
         "summary": "List Namespaces",
         "description": "Lists the names of the namespaces of an index.",
         "operationId": "listNamespaces",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
+
         "responses": {
           "200": {
             "description": "Successful response",
@@ -1305,9 +1054,7 @@
                           "description": "Array of namespace names. Every index has at least one namespace called default namespace, whose name is the empty string."
                         }
                       },
-                      "required": [
-                        "namespaces"
-                      ]
+                      "required": ["namespaces"]
                     }
                   }
                 }
@@ -1323,23 +1070,14 @@
           "405": {
             "description": "Method Not Allowed - When an unsupported HTTP method is used. Only HEAD, GET, POST, and PUT methods are allowed."
           }
-        },
-        "servers": [
-          {
-            "url": "{UPSTASH_VECTOR_REST_URL}",
-            "variables": {
-              "UPSTASH_VECTOR_REST_URL": {
-                "default": "https://your-vector-endpoint.upstash.io"
-              }
-            }
-          }
-        ]
+        }
       }
     },
     "/reset/{namespace}": {
       "delete": {
         "summary": "Reset Namespace(s)",
         "description": "Resets one or all namespaces of an index to its initial state by deleting all the vectors. The namespace will be completely empty after /reset is called, but will not be deleted.",
+        "operationId": "resetNamespace",
         "parameters": [
           {
             "name": "namespace",
@@ -1361,11 +1099,7 @@
             }
           }
         ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
+
         "responses": {
           "200": {
             "description": "Successful response",
@@ -1392,33 +1126,8 @@
           "405": {
             "description": "Method Not Allowed - Unsupported HTTP method used"
           }
-        },
-        "operationId": "reset/{namespace}=delete",
-        "servers": [
-          {
-            "url": "{UPSTASH_VECTOR_REST_URL}",
-            "variables": {
-              "UPSTASH_VECTOR_REST_URL": {
-                "default": "https://example-vector.upstash.io"
-              }
-            }
-          }
-        ]
+        }
       }
     }
-  },
-  "components": {
-    "schemas": {},
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
-      },
-      "BearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
-      }
-    }
-  },
-  "tags": {}
+  }
 }

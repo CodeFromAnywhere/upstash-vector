@@ -7,14 +7,7 @@ export interface UpsertDataItem {
   /** The raw text data to embed and upsert. */
   data: string;
   /** The metadata of the vector. This makes identifying vectors on retrieval easier and can be used with filters on queries. */
-  metadata?: Record<string, unknown>;
-}
-
-/**
- * Represents the successful response from the upsert operation.
- */
-export interface SuccessResponse {
-  result: "Success";
+  metadata?: Record<string, any>;
 }
 
 /**
@@ -28,7 +21,10 @@ export interface SuccessResponse {
 export async function upsertData(
   data: UpsertDataItem | UpsertDataItem[],
   namespace: string = "",
-): Promise<SuccessResponse> {
+): Promise<{
+  status: number;
+  message?: string;
+}> {
   const url = `${process.env.UPSTASH_VECTOR_REST_URL}/upsert-data/${namespace}`;
   const body = JSON.stringify(data, undefined, 2);
   const response = await fetch(url, {
@@ -42,19 +38,16 @@ export async function upsertData(
 
   if (!response.ok) {
     const text = await response.text();
-    console.log(url, text, body);
-    throw new Error(
-      `HTTP error! status: ${response.status} - ${response.statusText}`,
-    );
+    return { status: response.status, message: text };
   }
 
   const result = await response.json();
 
   if (result.result !== "Success") {
-    throw new Error(`Unexpected response: ${JSON.stringify(result)}`);
+    console.log(`Unexpected response: ${JSON.stringify(result)}`);
   }
 
-  return result;
+  return { status: response.status, message: result };
 }
 
 // Example usage:

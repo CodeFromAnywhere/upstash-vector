@@ -1,7 +1,7 @@
 {
   "name": "upstash-vector",
   "main": "build/index.js",
-  "version": "0.0.19",
+  "version": "0.0.24",
   "devDependencies": {
     "@types/node": "^22.5.4"
   },

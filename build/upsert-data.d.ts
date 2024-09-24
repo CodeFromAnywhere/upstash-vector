@@ -7,13 +7,7 @@ export interface UpsertDataItem {
     /** The raw text data to embed and upsert. */
     data: string;
     /** The metadata of the vector. This makes identifying vectors on retrieval easier and can be used with filters on queries. */
-    metadata?: Record<string, unknown>;
-}
-/**
- * Represents the successful response from the upsert operation.
- */
-export interface SuccessResponse {
-    result: "Success";
+    metadata?: Record<string, any>;
 }
 /**
  * Upserts (inserts or updates) the raw text data after embedding it in the Upstash Vector database.
@@ -23,4 +17,7 @@ export interface SuccessResponse {
  * @returns A promise that resolves to the success response.
  * @throws Will throw an error if the request fails or returns an unexpected response.
  */
-export declare function upsertData(data: UpsertDataItem | UpsertDataItem[], namespace?: string): Promise<SuccessResponse>;
+export declare function upsertData(data: UpsertDataItem | UpsertDataItem[], namespace?: string): Promise<{
+    status: number;
+    message?: string;
+}>;

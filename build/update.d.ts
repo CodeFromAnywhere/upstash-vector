@@ -12,7 +12,9 @@ export interface UpdateVectorRequest {
  * Interface for the update vector response
  */
 export interface UpdateVectorResponse {
-    result: {
+    status: number;
+    message?: string;
+    result?: {
         updated: number;
     };
 }

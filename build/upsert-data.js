@@ -68,15 +68,14 @@ function upsertData(data_1) {
                     return [4 /*yield*/, response.text()];
                 case 2:
                     text = _a.sent();
-                    console.log(url, text, body);
-                    throw new Error("HTTP error! status: ".concat(response.status, " - ").concat(response.statusText));
+                    return [2 /*return*/, { status: response.status, message: text }];
                 case 3: return [4 /*yield*/, response.json()];
                 case 4:
                     result = _a.sent();
                     if (result.result !== "Success") {
-                        throw new Error("Unexpected response: ".concat(JSON.stringify(result)));
+                        console.log("Unexpected response: ".concat(JSON.stringify(result)));
                     }
-                    return [2 /*return*/, result];
+                    return [2 /*return*/, { status: response.status, message: result }];
             }
         });
     });

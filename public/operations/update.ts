@@ -13,7 +13,9 @@ export interface UpdateVectorRequest {
  * Interface for the update vector response
  */
 export interface UpdateVectorResponse {
-  result: {
+  status: number;
+  message?: string;
+  result?: {
     updated: number;
   };
 }
@@ -57,11 +59,11 @@ export async function updateVector(
     } catch {
       errorMessage = `HTTP error! status: ${response.status}`;
     }
-    throw new Error(errorMessage);
+    return { status: response.status, message: errorMessage };
   }
 
-  const data: UpdateVectorResponse = await response.json();
-  return data;
+  const { result }: UpdateVectorResponse = await response.json();
+  return { status: response.status, result };
 }
 
 // Example usage:
