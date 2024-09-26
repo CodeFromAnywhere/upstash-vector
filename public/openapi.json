@@ -25,7 +25,6 @@
       }
     }
   },
-  "tags": {},
   "paths": {
     "/delete/{namespace}": {
       "delete": {
